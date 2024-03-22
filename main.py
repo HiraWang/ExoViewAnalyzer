@@ -12,14 +12,14 @@ def main(args, loglevel):
     logging.debug("Your Argument: %s" % args.argument)
 
     if '/' in args.argument:
-        print('start setting the csv path', args.argument)
+        print('\nstart setting the csv path', args.argument)
         with open(args.argument, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             for row in spamreader:
                 print(', '.join(row))
+                break
 
-    if args.argument == COMMAND_ANALYZE:
-        print('start analyzing the csv file')
+        print('\nstart analyzing the csv file')
 
 
 # Standard boilerplate to call the main() function to begin
