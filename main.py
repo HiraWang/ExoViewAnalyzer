@@ -1,16 +1,50 @@
-# This is a sample Python script.
+import csv, argparse, logging
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+CSV_PATH = ''
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+COMMAND_ANALYZE = 'ana'
 
 
-# Press the green button in the gutter to run the script.
+# Gather our code in a main() function
+def main(args, loglevel):
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)
+    logging.info("You passed an argument.")
+    logging.debug("Your Argument: %s" % args.argument)
+
+    if '/' in args.argument:
+        print('start setting the csv path', args.argument)
+        with open(args.argument, newline='') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+            for row in spamreader:
+                print(', '.join(row))
+
+    if args.argument == COMMAND_ANALYZE:
+        print('start analyzing the csv file')
+
+
+# Standard boilerplate to call the main() function to begin
+# the program.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    parser = argparse.ArgumentParser(
+        description="Does a thing to some stuff.",
+        epilog="As an alternative to the commandline, params can be placed in a file, one per line, and specified on the commandline like '%(prog)s @params.conf'.",
+        fromfile_prefix_chars='@')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    parser.add_argument(
+        "argument",
+        help="pass ARG to the program",
+        metavar="ARG")
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="increase output verbosity",
+        action="store_true")
+    args = parser.parse_args()
+
+    # Setup logging
+    if args.verbose:
+        loglevel = logging.DEBUG
+    else:
+        loglevel = logging.INFO
+
+    main(args, loglevel)
