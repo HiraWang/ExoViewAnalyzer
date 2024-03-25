@@ -1,4 +1,4 @@
-import csv, argparse, logging
+import os, sys, csv, argparse, logging
 
 CSV_PATH = ''
 RESULT_ATTRIBUTE = ['Total number of particles',
@@ -17,14 +17,14 @@ RESULT_ATTRIBUTE = ['Total number of particles',
 
 
 # Gather our code in a main() function
-def main(args, loglevel):
-    logging.basicConfig(format="%(levelname)s: %(message)s", level=loglevel)
-    logging.info("You passed an argument.")
-    logging.debug("Your Argument: %s" % args.argument)
+def main(path, log_level):
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=log_level)
+    logging.info('path of csv file is ready')
+    logging.debug("path of csv file: %s" % path)
 
-    if '/' in args.argument:
-        print('start analyzing the csv file', args.argument)
-        with open(args.argument, newline='') as csvfile:
+    if '/' in path and os.path.isfile(path):
+        logging.info('start analyzing the csv file: %s' % path)
+        with open(path, newline='') as csvfile:
             data = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
             cnt = 1
             antibody = []
@@ -36,16 +36,16 @@ def main(args, loglevel):
                     sample = row[0]
                     # print('sample:', sample)
                 if cnt == 2:
-                    print('antibody:')
+                    # print('antibody:')
                     antibody_name = ''
                     for i in range(len(row)):
                         if i % offset == 1:
                             antibody.append(row[i])
                             antibody_name += row[i] + ' '
-                    print(antibody_name)
-                if cnt == 3:
-                    print('channel:')
-                    print(row[1], row[2], row[3], row[4])
+                    # print(antibody_name)
+                # if cnt == 3:
+                #     print('channel:')
+                #     print(row[1], row[2], row[3], row[4])
 
                 if cnt >= 4:
                     for i in range(len(row) // 5):
@@ -87,39 +87,51 @@ def main(args, loglevel):
                     # print(cnt, result[0])
                 cnt += 1
 
-        result_name = str(args.argument.split('.csv')[0]) + "_result.csv"
-        print('start organizing the result', result_name)
+        result_name = str(path.split('.csv')[0]) + "_result.csv"
+        logging.info('start organizing the result %s' % result_name)
         fp = open(result_name, "w")
         for i in range(len(result)):
             fp.write(antibody[i])
             for j in range(len(result[i])):
                 fp.write(',' + RESULT_ATTRIBUTE[j] + ',' + str(result[i][j]) + '\n')
         fp.close()
+    else:
+        logging.info('invalid path!')
 
 
 # Standard boilerplate to call the main() function to begin
 # the program.
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description="Does a thing to some stuff.",
-        epilog="As an alternative to the commandline, params can be placed in a file, one per line, and specified on the commandline like '%(prog)s @params.conf'.",
-        fromfile_prefix_chars='@')
-
-    parser.add_argument(
-        "argument",
-        help="pass ARG to the program",
-        metavar="ARG")
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        help="increase output verbosity",
-        action="store_true")
-    args = parser.parse_args()
-
-    # Setup logging
-    if args.verbose:
-        loglevel = logging.DEBUG
+    if len(sys.argv) == 1:
+        print('Tool is run in normal mode')
+        while True:
+            print('Please enter the path of csv file')
+            command = input()
+            if command != 'exit':
+                main(command, logging.INFO)
+            else:
+                exit()
     else:
-        loglevel = logging.INFO
+        print('Tool is run in cmd line mode')
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            "path",
+            help="path of csv file")
+        parser.add_argument(
+            "-v",
+            "--verbose",
+            help="increase output verbosity",
+            dest="verbose",
+            action="store_true")
 
-    main(args, loglevel)
+        args = parser.parse_args()
+        print("positional arg:", args.path)
+        print("optional   arg:", args.verbose)
+
+        # Setup logging
+        if args.verbose:
+            log_level = logging.DEBUG
+        else:
+            log_level = logging.INFO
+
+        main(args.path, log_level)
