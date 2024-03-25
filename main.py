@@ -104,6 +104,11 @@ def main(path, log_level):
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('Tool is run in normal mode')
+        print('---------------------------------------\n' +
+              'normal mode arguments:\n' +
+              '<your path>    set the path of csv file\n' +
+              'exit           exit program\n' +
+              '---------------------------------------')
         while True:
             print('Please enter the path of csv file')
             command = input()
