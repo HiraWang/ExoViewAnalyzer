@@ -46,11 +46,11 @@ def main(path, level):
                     for i in range(len(row)):
                         if i % offset == 1:
                             antibody.append(row[i])
-                            antibody_name += row[i] + ' '
+                            antibody_name += ('%5s' % row[i]) + ' '
                 if cnt == 3:
                     channel_name = ''
                     for i in range(4):
-                        channel_name += row[i + 1] + ' '
+                        channel_name += ('%5s' % row[i + 1]) + ' '
                 if cnt >= 4:
                     for i in range(len(row) // 5):
                         # i: 0 1 2 3
