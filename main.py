@@ -5,6 +5,9 @@ import os
 import sys
 import time
 
+g_antibody_name = None
+g_channel_name = None
+
 RESULT_ATTRIBUTE = ['Total number of particles',
                     'IM>0 & (CD63>0 OR CD81>0)',
                     'IM>0 & (CD63>0 OR CD81>0) AND FITC>0',
@@ -39,17 +42,15 @@ def main(path, level):
                     sample = row[0]
                     # print('sample:', sample)
                 if cnt == 2:
-                    # print('antibody:')
                     antibody_name = ''
                     for i in range(len(row)):
                         if i % offset == 1:
                             antibody.append(row[i])
                             antibody_name += row[i] + ' '
-                    # print(antibody_name)
-                # if cnt == 3:
-                #     print('channel:')
-                #     print(row[1], row[2], row[3], row[4])
-
+                if cnt == 3:
+                    channel_name = ''
+                    for i in range(4):
+                        channel_name += row[i + 1] + ' '
                 if cnt >= 4:
                     for i in range(len(row) // 5):
                         # i: 0 1 2 3
@@ -100,8 +101,10 @@ def main(path, level):
                 if j == 0:
                     print('%5s %s %5d' % (antibody[i], RESULT_ATTRIBUTE[j], result[i][j]))
         fp.close()
+        return antibody_name, channel_name
     else:
         logging.error('invalid path!')
+        return None, None
 
 
 # Standard boilerplate to call the main() function to begin
@@ -109,26 +112,34 @@ def main(path, level):
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('Tool is run in normal mode')
-        print('---------------------------------------\n' +
+        print('----------------------------------------\n' +
               'normal mode arguments:\n' +
               '<your path>    set the path of csv file\n' +
               'help           show command list\n' +
+              'info           show antibody and channel\n' +
               'exit           exit program\n' +
-              '---------------------------------------')
+              '----------------------------------------')
         while True:
             print('Please enter the path of csv file')
             command = input()
             if command == 'exit':
                 exit()
+            elif command == 'info':
+                if g_antibody_name is not None and g_channel_name is not None:
+                    print('antibody: ', g_antibody_name)
+                    print('channel : ', g_channel_name)
+                else:
+                    print('Please enter the path of csv file first')
             elif command == 'help':
-                print('---------------------------------------\n' +
+                print('----------------------------------------\n' +
                       'normal mode arguments:\n' +
                       '<your path>    set the path of csv file\n' +
                       'help           show command list\n' +
+                      'info           show antibody and channel\n' +
                       'exit           exit program\n' +
-                      '---------------------------------------')
+                      '----------------------------------------')
             else:
-                main(command, logging.INFO)
+                g_antibody_name, g_channel_name = main(command, logging.INFO)
                 time.sleep(1)
     else:
         print('Tool is run in cmd line mode')
