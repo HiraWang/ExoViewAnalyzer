@@ -5,7 +5,6 @@ import os
 import sys
 import time
 
-CSV_PATH = ''
 RESULT_ATTRIBUTE = ['Total number of particles',
                     'IM>0 & (CD63>0 OR CD81>0)',
                     'IM>0 & (CD63>0 OR CD81>0) AND FITC>0',
@@ -21,9 +20,8 @@ RESULT_ATTRIBUTE = ['Total number of particles',
                     'IM=0 & (CD63=0 AND CD81=0) AND FITC=0']
 
 
-# Gather our code in a main() function
-def main(path, log_level):
-    logging.basicConfig(format='%(levelname)s: %(message)s', level=log_level)
+def main(path, level):
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=level)
     logging.info('path of csv file is ready')
     logging.debug('path of csv file: %s' % path)
 
