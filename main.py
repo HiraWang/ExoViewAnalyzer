@@ -1,4 +1,9 @@
-import os, sys, csv, argparse, logging
+import argparse
+import csv
+import logging
+import os
+import sys
+import time
 
 CSV_PATH = ''
 RESULT_ATTRIBUTE = ['Total number of particles',
@@ -18,11 +23,11 @@ RESULT_ATTRIBUTE = ['Total number of particles',
 
 # Gather our code in a main() function
 def main(path, log_level):
-    logging.basicConfig(format="%(levelname)s: %(message)s", level=log_level)
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=log_level)
     logging.info('path of csv file is ready')
-    logging.debug("path of csv file: %s" % path)
+    logging.debug('path of csv file: %s' % path)
 
-    if '/' in path and os.path.isfile(path):
+    if '.csv' in path and os.path.isfile(path):
         logging.info('start analyzing the csv file: %s' % path)
         with open(path, newline='') as csvfile:
             data = csv.reader(csvfile, delimiter=',', skipinitialspace=True)
@@ -88,15 +93,17 @@ def main(path, log_level):
                 cnt += 1
 
         result_name = str(path.split('.csv')[0]) + "_result.csv"
-        logging.info('start organizing the result %s' % result_name)
+        logging.info('start organizing the result:  %s' % result_name)
         fp = open(result_name, "w")
         for i in range(len(result)):
             fp.write(antibody[i])
             for j in range(len(result[i])):
                 fp.write(',' + RESULT_ATTRIBUTE[j] + ',' + str(result[i][j]) + '\n')
+                if j == 0:
+                    print('%5s %s %5d' % (antibody[i], RESULT_ATTRIBUTE[j], result[i][j]))
         fp.close()
     else:
-        logging.info('invalid path!')
+        logging.error('invalid path!')
 
 
 # Standard boilerplate to call the main() function to begin
@@ -107,15 +114,24 @@ if __name__ == '__main__':
         print('---------------------------------------\n' +
               'normal mode arguments:\n' +
               '<your path>    set the path of csv file\n' +
+              'help           show command list\n' +
               'exit           exit program\n' +
               '---------------------------------------')
         while True:
             print('Please enter the path of csv file')
             command = input()
-            if command != 'exit':
-                main(command, logging.INFO)
-            else:
+            if command == 'exit':
                 exit()
+            elif command == 'help':
+                print('---------------------------------------\n' +
+                      'normal mode arguments:\n' +
+                      '<your path>    set the path of csv file\n' +
+                      'help           show command list\n' +
+                      'exit           exit program\n' +
+                      '---------------------------------------')
+            else:
+                main(command, logging.INFO)
+                time.sleep(1)
     else:
         print('Tool is run in cmd line mode')
         parser = argparse.ArgumentParser()
