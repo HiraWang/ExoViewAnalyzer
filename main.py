@@ -120,7 +120,7 @@ if __name__ == '__main__':
               'exit           exit program\n' +
               '----------------------------------------')
         while True:
-            print('Please enter the path of csv file')
+            print('')
             command = input()
             if command == 'exit':
                 exit()
