@@ -8,6 +8,14 @@ import time
 g_antibody_name = None
 g_channel_name = None
 
+COMMAND_HELP = ('----------------------------------------\n' +
+                'normal mode arguments:\n' +
+                '<your path>    set the path of csv file\n' +
+                'help           show command list\n' +
+                'info           show antibody and channel\n' +
+                'exit           exit program\n' +
+                '----------------------------------------')
+
 RESULT_ATTRIBUTE = ['Total number of particles',
                     'IM>0 & (CD63>0 OR CD81>0)',
                     'IM>0 & (CD63>0 OR CD81>0) AND FITC>0',
@@ -140,13 +148,7 @@ def main(path, level):
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('Tool is run in normal mode')
-        print('----------------------------------------\n' +
-              'normal mode arguments:\n' +
-              '<your path>    set the path of csv file\n' +
-              'help           show command list\n' +
-              'info           show antibody and channel\n' +
-              'exit           exit program\n' +
-              '----------------------------------------')
+        print(COMMAND_HELP)
         while True:
             print('')
             command = input()
@@ -159,13 +161,7 @@ if __name__ == '__main__':
                 else:
                     print('Please enter the path of csv file first')
             elif command == 'help':
-                print('----------------------------------------\n' +
-                      'normal mode arguments:\n' +
-                      '<your path>    set the path of csv file\n' +
-                      'help           show command list\n' +
-                      'info           show antibody and channel\n' +
-                      'exit           exit program\n' +
-                      '----------------------------------------')
+                print(COMMAND_HELP)
             else:
                 g_antibody_name, g_channel_name = main(command, logging.INFO)
                 time.sleep(1)
